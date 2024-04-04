@@ -17,12 +17,12 @@ class PredictionModel(object):
 
         self.dataSet = pd.read_csv(dataset_path)
 
-        if(newData!=None):
+        if(len(newData) > 0 ):
 
             for reports in newData:
 
                 new_data = {'label': 'fraud','content': reports}
-                self.dataSet.append(new_data) 
+                self.dataSet._append(new_data,ignore_index=True) 
 
         self.train_text_classification_model(self.dataSet)
 

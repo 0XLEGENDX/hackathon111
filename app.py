@@ -14,13 +14,13 @@ import svm
 
 app = Flask(__name__)
 
-
+PreBankeywords = {} 
 
 dataset_updated = []
 dataset_link = "https://firebasestorage.googleapis.com/v0/b/learning-storage-anurag.appspot.com/o/augmented_dataset.csv?alt=media&token=1e33e333-d2b0-440a-a32e-b965daaeddfa"
 
-modelUsed = svm.PredictionModel( )
-modelUsed.loadDataset(dataset_link , None)
+modelUsed = svm.PredictionModel()
+modelUsed.loadDataset(dataset_link , dataset_updated)
 # def download_file(url ):
 #     return requests.get(url)
 
@@ -49,7 +49,15 @@ def upload():
     translated_text = translator.translate(text, src='hi', dest='en')
     # return predict_text(translated_text.text)
     status , confidence = modelUsed.predict_text(translated_text.text)
-    return status
+
+    if(status == 'Normal'):
+
+        if(confidence > 90):
+
+            status = "Fraud"
+
+    
+    return (status + ' $$$ ' + str(confidence) + " $$$ " + translated_text.text)
     # return translated_text.text
 
 
@@ -63,6 +71,7 @@ def report():
         dataToReport = data 
         global dataset_updated
         dataset_updated.append(dataToReport)
+        modelUsed.loadDataset(dataset_link , dataset_updated)
         return "Added data to dataset"
     
 
